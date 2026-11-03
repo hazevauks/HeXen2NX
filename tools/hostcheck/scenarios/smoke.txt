@@ -1,0 +1,50 @@
+# Boots, walks the main menu, starts a new game as the Paladin and plays a bit.
+#
+# A frame of the host check is one of a 60 Hz console. The menu is up from the
+# start: hexen.rc says menu_main.
+
+  60 shot 01_main_menu
+
+# New Mission > class selection > difficulty
+  90 press A
+  95 release A
+ 150 shot 02_class_or_episode
+ 180 press A
+ 185 release A
+ 240 shot 03_class
+ 270 press A
+ 275 release A
+ 330 shot 04_difficulty
+ 360 press A
+ 365 release A
+
+# Into the first map, then a look at it
+1100 shot 05_ingame_start
+1130 press MINUS
+1140 shot 06_showinfo
+1150 release MINUS
+
+# Walking and turning with the sticks, and a swing
+1200 stick L 0 32767
+1260 press ZR
+1266 release ZR
+1320 shot 07_walked
+1321 stick L 0 0
+1330 stick R 32767 0
+1380 stick R 0 0
+1400 shot 08_turned
+
+# Inventory browsing, jump, weapon change
+1420 press L
+1426 release L
+1440 press A
+1446 release A
+1460 press Y
+1466 release Y
+1520 shot 09_actions
+
+# The pause menu, and out
+1560 press PLUS
+1566 release PLUS
+1620 shot 10_pause_menu
+1650 quit

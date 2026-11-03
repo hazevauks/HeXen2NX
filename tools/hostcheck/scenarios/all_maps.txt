@@ -1,0 +1,137 @@
+# Loads every map of the base game, a screenshot and the memory use of each.
+# Then a save and a load, for the hub system's files.
+
+60 cmd map demo1
+300 shot map_demo1
+301 cmd sys_stats
+360 cmd map demo2
+600 shot map_demo2
+601 cmd sys_stats
+660 cmd map demo3
+900 shot map_demo3
+901 cmd sys_stats
+960 cmd map ravdm1
+1200 shot map_ravdm1
+1201 cmd sys_stats
+1260 cmd map castle4
+1500 shot map_castle4
+1501 cmd sys_stats
+1560 cmd map castle5
+1800 shot map_castle5
+1801 cmd sys_stats
+1860 cmd map cath
+2100 shot map_cath
+2101 cmd sys_stats
+2160 cmd map egypt1
+2400 shot map_egypt1
+2401 cmd sys_stats
+2460 cmd map egypt2
+2700 shot map_egypt2
+2701 cmd sys_stats
+2760 cmd map egypt3
+3000 shot map_egypt3
+3001 cmd sys_stats
+3060 cmd map egypt4
+3300 shot map_egypt4
+3301 cmd sys_stats
+3360 cmd map egypt5
+3600 shot map_egypt5
+3601 cmd sys_stats
+3660 cmd map egypt6
+3900 shot map_egypt6
+3901 cmd sys_stats
+3960 cmd map egypt7
+4200 shot map_egypt7
+4201 cmd sys_stats
+4260 cmd map meso1
+4500 shot map_meso1
+4501 cmd sys_stats
+4560 cmd map meso2
+4800 shot map_meso2
+4801 cmd sys_stats
+4860 cmd map meso3
+5100 shot map_meso3
+5101 cmd sys_stats
+5160 cmd map meso4
+5400 shot map_meso4
+5401 cmd sys_stats
+5460 cmd map meso5
+5700 shot map_meso5
+5701 cmd sys_stats
+5760 cmd map meso6
+6000 shot map_meso6
+6001 cmd sys_stats
+6060 cmd map meso8
+6300 shot map_meso8
+6301 cmd sys_stats
+6360 cmd map meso9
+6600 shot map_meso9
+6601 cmd sys_stats
+6660 cmd map rider1a
+6900 shot map_rider1a
+6901 cmd sys_stats
+6960 cmd map rider2c
+7200 shot map_rider2c
+7201 cmd sys_stats
+7260 cmd map eidolon
+7500 shot map_eidolon
+7501 cmd sys_stats
+7560 cmd map romeric1
+7800 shot map_romeric1
+7801 cmd sys_stats
+7860 cmd map romeric2
+8100 shot map_romeric2
+8101 cmd sys_stats
+8160 cmd map romeric3
+8400 shot map_romeric3
+8401 cmd sys_stats
+8460 cmd map romeric4
+8700 shot map_romeric4
+8701 cmd sys_stats
+8760 cmd map romeric5
+9000 shot map_romeric5
+9001 cmd sys_stats
+9060 cmd map romeric6
+9300 shot map_romeric6
+9301 cmd sys_stats
+9360 cmd map romeric7
+9600 shot map_romeric7
+9601 cmd sys_stats
+9660 cmd map tower
+9900 shot map_tower
+9901 cmd sys_stats
+9960 cmd map village1
+10200 shot map_village1
+10201 cmd sys_stats
+10260 cmd map village2
+10500 shot map_village2
+10501 cmd sys_stats
+10560 cmd map village3
+10800 shot map_village3
+10801 cmd sys_stats
+10860 cmd map village4
+11100 shot map_village4
+11101 cmd sys_stats
+11160 cmd map village5
+11400 shot map_village5
+11401 cmd sys_stats
+11460 cmd map ravdm2
+11700 shot map_ravdm2
+11701 cmd sys_stats
+11760 cmd map ravdm3
+12000 shot map_ravdm3
+12001 cmd sys_stats
+12060 cmd map ravdm4
+12300 shot map_ravdm4
+12301 cmd sys_stats
+12360 cmd map ravdm5
+12600 shot map_ravdm5
+12601 cmd sys_stats
+
+12660 cmd map demo1
+12900 cmd save nxcheck
+12960 shot save_written
+13020 cmd map village1
+13260 cmd load nxcheck
+13560 shot save_loaded
+13620 quit
