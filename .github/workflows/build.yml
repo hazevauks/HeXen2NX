@@ -1,0 +1,44 @@
+# Builds the NRO and hands out the SD card layout. No game file is part of this.
+name: build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dependencies
+        run: |
+          apt-get update
+          apt-get install -y cmake ninja-build
+          dkp-pacman -Sy --noconfirm --needed switch-dev switch-cmake deko3d uam switch-libogg switch-libvorbisidec
+
+      - name: Build
+        run: bash build_nx.sh
+
+      - name: Check the package for game files
+        run: |
+          if find SD_CARD -type f | grep -viE '/README\.md$|\.nro$'; then
+            echo "SD_CARD holds something besides the NRO"
+            exit 1
+          fi
+
+      # What a player copies to the SD card's root.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HeXen2NX_sd
+          path: SD_CARD/
+          if-no-files-found: error
+
+      # What it takes to read a crash report of this build.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HeXen2NX_elf
+          path: build/*.elf
+          if-no-files-found: error
