@@ -33,6 +33,9 @@
 #include "snd_gus.h"
 #include "snd_pci.h"
 #include "snd_ahi.h"
+#if HAVE_NX_SOUND
+extern snd_driver_t snddrv_nx;
+#endif
 
 static qboolean	snd_sys_inited = false;
 
@@ -133,6 +136,9 @@ void S_DriversInit (void)
 #endif
 #if HAVE_DOS_PCI_SOUND
 	S_RegisterDriver(&snddrv_pci);
+#endif
+#if HAVE_NX_SOUND
+	S_RegisterDriver(&snddrv_nx);
 #endif
 #if HAVE_AHI_SOUND
 	S_RegisterDriver(&snddrv_ahi);

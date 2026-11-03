@@ -314,6 +314,11 @@ static void Cmd_Exec_f (void)
 	}
 	Con_Printf ("execing %s\n", Cmd_Argv(1));
 
+#if defined(PLATFORM_SWITCH)
+	/* console defaults take over from the PC ones, ahead of config.cfg */
+	if (q_strcasecmp (Cmd_Argv(1), "default.cfg") == 0)
+		Cbuf_InsertText (NX_GetDefaultConfig ());
+#endif
 	Cbuf_InsertText (f);
 	Hunk_FreeToLowMark (mark);
 }

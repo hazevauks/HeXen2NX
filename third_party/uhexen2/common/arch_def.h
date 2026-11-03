@@ -72,6 +72,15 @@
 #	define	PLATFORM_AMIGA		1
 #   endif
 
+#elif defined(__SWITCH__)		/* Nintendo Switch: libnx + newlib */
+
+#   if !defined(PLATFORM_SWITCH)
+#	define	PLATFORM_SWITCH		1
+#   endif
+#   if !defined(PLATFORM_UNIX)
+#	define	PLATFORM_UNIX		1
+#   endif
+
 #elif defined(__riscos__)
 
 #   if !defined(PLATFORM_RISCOS)
@@ -121,7 +130,9 @@
 #endif	/* PLATFORM_AMIGAOS3 (for convenience) */
 
 
-#if defined(_WIN64)
+#if defined(PLATFORM_SWITCH)
+#	define	PLATFORM_STRING	"Nintendo Switch"
+#elif defined(_WIN64)
 #	define	PLATFORM_STRING	"Win64"
 #elif defined(PLATFORM_WINDOWS)
 #	define	PLATFORM_STRING	"Windows"

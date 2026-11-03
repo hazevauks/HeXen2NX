@@ -135,6 +135,27 @@
 #define	K_AUX31			241
 #define	K_AUX32			242
 
+#if defined(PLATFORM_SWITCH)
+/* Nintendo Switch buttons. + is always K_ESCAPE: it opens the menu. */
+#define	K_NX_A			K_JOY1
+#define	K_NX_B			K_JOY2
+#define	K_NX_X			K_JOY3
+#define	K_NX_Y			K_JOY4
+#define	K_NX_L			K_AUX1
+#define	K_NX_R			K_AUX2
+#define	K_NX_ZL			K_AUX3
+#define	K_NX_ZR			K_AUX4
+#define	K_NX_MINUS		K_AUX5
+#define	K_NX_L3			K_AUX6
+#define	K_NX_R3			K_AUX7
+#define	K_NX_DUP		K_AUX8
+#define	K_NX_DDOWN		K_AUX9
+#define	K_NX_DLEFT		K_AUX10
+#define	K_NX_DRIGHT		K_AUX11
+
+const char *NX_GetDefaultConfig (void);
+#endif	/* PLATFORM_SWITCH */
+
 
 #define	MAXCMDLINE	256
 

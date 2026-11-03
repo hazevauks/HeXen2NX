@@ -30,6 +30,7 @@
 #include <limits.h>
 
 #if defined(PLATFORM_BSD) || defined(PLATFORM_OSX)	|| \
+    (defined(PLATFORM_SWITCH) && !defined(NX_HOSTCHECK)) /* libnx: BSD sockets */ || \
     defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
     (defined(PLATFORM_OS2) && !defined(__EMX__))	|| \
     (defined(__INNOTEK_LIBC__) || defined(__KLIBC__))	|| \

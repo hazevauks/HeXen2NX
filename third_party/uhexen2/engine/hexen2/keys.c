@@ -114,6 +114,23 @@ static keyname_t keynames[] =
 	{"MOUSE4", K_MOUSE4},
 	{"MOUSE5", K_MOUSE5},
 
+#if defined(PLATFORM_SWITCH)
+	{"BUTTON_A", K_NX_A},
+	{"BUTTON_B", K_NX_B},
+	{"BUTTON_X", K_NX_X},
+	{"BUTTON_Y", K_NX_Y},
+	{"BUTTON_L", K_NX_L},
+	{"BUTTON_R", K_NX_R},
+	{"BUTTON_ZL", K_NX_ZL},
+	{"BUTTON_ZR", K_NX_ZR},
+	{"BUTTON_MINUS", K_NX_MINUS},
+	{"BUTTON_L3", K_NX_L3},
+	{"BUTTON_R3", K_NX_R3},
+	{"BUTTON_DUP", K_NX_DUP},
+	{"BUTTON_DDOWN", K_NX_DDOWN},
+	{"BUTTON_DLEFT", K_NX_DLEFT},
+	{"BUTTON_DRIGHT", K_NX_DRIGHT},
+#endif
 	{"JOY1", K_JOY1},
 	{"JOY2", K_JOY2},
 	{"JOY3", K_JOY3},
