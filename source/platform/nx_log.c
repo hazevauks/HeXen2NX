@@ -45,13 +45,12 @@ void NX_LogInit (void)
 	if (__nxlink_host.s_addr != 0)
 		nxlink_fd = nxlinkStdio();
 
-	/* Without nxlink, what libraries print goes to the log file too. */
-	if (nxlink_fd < 0)
+	/* Without nxlink, what libraries print goes to the log file too, through
+	 * its descriptor: the SD card's file system opens a file to write once. */
+	if (nxlink_fd < 0 && log_file)
 	{
-		freopen(path, "a", stdout);
-		freopen(path, "a", stderr);
-		setvbuf(stdout, NULL, _IOLBF, 1024);
-		setvbuf(stderr, NULL, _IONBF, 0);
+		dup2(fileno(log_file), STDOUT_FILENO);
+		dup2(fileno(log_file), STDERR_FILENO);
 	}
 
 	NX_LogPrintf("HeXen2NX log, %04d-%02d-%02d %02d:%02d:%02d, nxlink %s\n",

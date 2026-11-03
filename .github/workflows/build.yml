@@ -11,7 +11,7 @@ jobs:
     container: devkitpro/devkita64:latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Dependencies
         run: |
@@ -30,14 +30,14 @@ jobs:
           fi
 
       # What a player copies to the SD card's root.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: HeXen2NX_sd
           path: SD_CARD/
           if-no-files-found: error
 
       # What it takes to read a crash report of this build.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: HeXen2NX_elf
           path: build/*.elf

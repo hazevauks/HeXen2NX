@@ -43,9 +43,12 @@
 #define ENGINE_THREAD_PRIO	0x2C
 #define ENGINE_MEM_ALLOC	0x8000000	/* 128 MB: engine hunk */
 #define MAX_ARGS		64
+#define PERF_LOG_SECONDS	10.0
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
-cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
+/* The frame's wait for the screen does the pacing: this only keeps a loop that
+ * got ahead of it from spinning, and stays out of a frame's 16 ms otherwise. */
+cvar_t		sys_throttle = {"sys_throttle", "0.005", CVAR_NONE};
 
 qboolean	isDedicated;
 
@@ -422,18 +425,22 @@ static qboolean HasArgument (const char *name)
 	return false;
 }
 
-/* The mission pack has its own folder: having it means wanting it. */
-static void AddImpliedArguments (void)
+static void AddImpliedArguments (qboolean have_network)
 {
 	static char	portals[] = "-portals";
+	static char	noudp[] = "-noudp";
 	char		path[MAX_OSPATH];
 
+	/* The mission pack has its own folder: having it means wanting it. */
 	q_snprintf (path, sizeof(path), "%s/portals/pak3.pak", basedir);
 	if (engine_args.argc < MAX_ARGS && !HasArgument("-noportals") &&
 	    Sys_FileType(path) == FS_ENT_FILE)
 	{
 		engine_args.argv[engine_args.argc++] = portals;
 	}
+
+	if (engine_args.argc < MAX_ARGS && !have_network)
+		engine_args.argv[engine_args.argc++] = noudp;
 }
 
 /* The game's folder is the NRO's, when the loader tells us, as long as the
@@ -456,15 +463,33 @@ static void FindBaseDirectory (int argc, char **argv)
 		q_strlcpy (basedir, path, sizeof(basedir));
 }
 
-static void LogSystemInfo (void)
+static void LogMemory (void)
 {
 	u64	total = 0, used = 0;
 
 	svcGetInfo (&total, InfoType_TotalMemorySize, CUR_PROCESS_HANDLE, 0);
 	svcGetInfo (&used, InfoType_UsedMemorySize, CUR_PROCESS_HANDLE, 0);
-	NX_LogPrintf ("applet type: %d, memory: %lu MB total, %lu MB used\n",
-			(int) appletGetAppletType(), total >> 20, used >> 20);
-	NX_LogPrintf ("basedir: %s, arguments: %d\n", basedir, engine_args.argc - 1);
+	NX_LogPrintf ("memory: %lu MB total, %lu MB used\n", total >> 20, used >> 20);
+}
+
+/* How it runs goes to the log, for a report to say more than "it felt slow". */
+static void LogPerformance (double now, double frame_time)
+{
+	static double	window_start, slowest;
+	static int	frames_at_start;
+
+	if (frame_time > slowest)
+		slowest = frame_time;
+
+	if (now - window_start >= PERF_LOG_SECONDS)
+	{
+		NX_LogPrintf ("perf: %.1f fps, slowest frame %.1f ms, map %s\n",
+				(host_framecount - frames_at_start) / (now - window_start),
+				slowest * 1000.0, sv.active ? sv.name : "-");
+		window_start = now;
+		frames_at_start = host_framecount;
+		slowest = 0;
+	}
 }
 
 static void EngineMain (void)
@@ -489,6 +514,9 @@ static void EngineMain (void)
 
 	isDedicated = false;
 
+	if (Sys_FileType(va("%s/data1/pak0.pak", basedir)) != FS_ENT_FILE)
+		Sys_Error ("Game files not found.\nCopy the data1 folder of your copy of HeXen II to %s/", basedir);
+
 	parms.memsize = ENGINE_MEM_ALLOC;
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
@@ -501,6 +529,7 @@ static void EngineMain (void)
 	Host_Init();
 
 	NX_LogPrintf ("engine ready\n");
+	LogMemory ();
 
 	oldtime = Sys_DoubleTime ();
 
@@ -510,6 +539,7 @@ static void EngineMain (void)
 		time = newtime - oldtime;
 
 		Host_Frame (time);
+		LogPerformance (newtime, time);
 
 		if (time < sys_throttle.value)
 			svcSleepThread (1000000);
@@ -537,12 +567,14 @@ static void EngineThread (void *unused)
 int main (int argc, char **argv)
 {
 	Thread	thread;
-	Result	rc;
+	Result	rc, net_rc;
 
 	start_tick = armGetSystemTick();
 
-	socketInitializeDefault();
+	net_rc = socketInitializeDefault();
 	NX_LogInit();
+	if (R_FAILED(net_rc))
+		NX_LogPrintf ("Sockets not available: 0x%x\n", net_rc);
 
 	/* Closing from the HOME menu comes through the main loop, to save settings. */
 	appletLockExit();
@@ -550,8 +582,10 @@ int main (int argc, char **argv)
 	FindBaseDirectory (argc, argv);
 	NX_PrepareGameData (basedir);
 	BuildArguments (argc, argv);
-	AddImpliedArguments ();
-	LogSystemInfo ();
+	AddImpliedArguments (R_SUCCEEDED(net_rc));
+	NX_LogPrintf ("applet type: %d, basedir: %s, arguments: %d\n",
+			(int) appletGetAppletType(), basedir, engine_args.argc - 1);
+	LogMemory ();
 
 	rc = threadCreate(&thread, EngineThread, NULL, NULL, ENGINE_STACK_SIZE, ENGINE_THREAD_PRIO, -2);
 	if (R_SUCCEEDED(rc))
@@ -570,7 +604,8 @@ int main (int argc, char **argv)
 	NX_LogPrintf ("exit code %d\n", exit_code);
 	NX_LogShutdown();
 	appletUnlockExit();
-	socketExit();
+	if (R_SUCCEEDED(net_rc))
+		socketExit();
 
 	return exit_code;
 }
